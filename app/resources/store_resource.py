@@ -21,9 +21,7 @@ class Stores(Resource):
         data = Stores.parser.parse_args()
 
         if StoreModel.find_by_name(data["name"]):
-            return (
-                {"message" : "A store with the name '{}' already exists.".format(data["name"])}
-            )
+            return ({"message" : "A store with the name '{}' already exists.".format(data["name"])})
 
         store = StoreModel(**data)
 
@@ -36,7 +34,7 @@ class Stores(Resource):
    
 
 class Store(Resource):
-    def get(self, id):
+    def get(self, id:int):
         """Return a single store"""
         store = StoreModel.find_by_id(id)
 
@@ -44,7 +42,7 @@ class Store(Resource):
             return store.json(), 200
         return {"message" : "Store does not exist."}, 404
 
-    def delete(self, id):
+    def delete(self, id:int):
         """Delete an existing store"""
         store = StoreModel.find_by_id(id)
 

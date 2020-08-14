@@ -1,5 +1,5 @@
 from flask_restx import Resource, reqparse
-from flask_jwt_extended import get_jwt_identity, get_jwt_claims, jwt_optional, fresh_jwt_required, jwt_required
+from flask_jwt_extended import fresh_jwt_required, jwt_required
 
 from models.item import ItemModel
 
@@ -16,20 +16,10 @@ class Items(Resource):
         "store_id", type=int, required=True, help="Eery Item needs a store_id!"
     )
 
-    @jwt_optional
     def get(self):
         "Return a list of all items"
-        user_id = get_jwt_identity()
-        items = [item.json() for item in ItemModel.find_all_items()]
-        if user_id:
-            return {"items" : items}, 200
+        return {"items" : items = [item.json() for item in ItemModel.find_all_items()]}
         
-        return(
-            {
-                "items":[item["name"] for item in items],
-                "message": "More data available if you log in."
-            }, 200
-        )
 
     @fresh_jwt_required
     def post(self):
@@ -38,9 +28,7 @@ class Items(Resource):
         item = ItemModel(**data)
 
         if ItemModel.find_by_name(data["name"]):
-            return (
-                {"message" : "An Item with the name '{}' already exists.".format(data["name"])}
-            )
+            return ({"message" : "An Item with the name '{}' already exists.".format(data["name"])})
 
         try:
             item.save_to_db()
@@ -52,7 +40,7 @@ class Items(Resource):
 
 class Item(Resource):
     @jwt_required
-    def get(self, id):
+    def get(self, id:int):
         """Return a single item"""
         item = ItemModel.find_by_id(id)
 
@@ -61,7 +49,7 @@ class Item(Resource):
         return {"message": "Item not found "}, 404
 
     @jwt_required
-    def delete(self, id):
+    def delete(self, id:int):
         """Delete an item that matches the id"""
         item = ItemModel.find_by_id(id)
 
@@ -71,7 +59,7 @@ class Item(Resource):
         return {"message" : "Item not found"}, 404
 
 
-    def put(self, id):
+    def put(self, id:int):
         """Update an existing item or creates a new item"""
         data = Items.parser.parse_args()
 

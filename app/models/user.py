@@ -1,4 +1,8 @@
+from typing import Dict, List, Union
 from db.config import db
+from models.store import StoreJSON
+
+UserJSON = Dict[str, Union[int, str, List[StoreJSON]]]
 
 class UserModel(db.Model):
     __tablename__ = "users"
@@ -10,12 +14,12 @@ class UserModel(db.Model):
 
     stores = db.relationship("StoreModel", backref="stores", lazy=True)
 
-    def __init__(self, username, email, password):
+    def __init__(self, username:str, email:str, password:str):
         self.username = username
         self.email= email
         self.password = password
     
-    def json(self):
+    def json(self) -> Dict:
         return {
             "id": self.id,
             "username": self.username,
@@ -24,7 +28,7 @@ class UserModel(db.Model):
         }
 
     # save to the db
-    def save_to_db(self):
+    def save_to_db(self) -> None:
         db.session.add(self)
         db.session.commit()
 
@@ -40,10 +44,10 @@ class UserModel(db.Model):
 
     # get all user
     @classmethod
-    def find_all_users(cls):
+    def find_all_users(cls) -> List:
         return cls.query.all()
 
     # delete from db
-    def delete_from_db(self):
+    def delete_from_db(self) -> None:
         db.session.delete(self)
         db.session.commit()
