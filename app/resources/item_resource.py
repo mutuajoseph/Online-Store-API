@@ -18,7 +18,7 @@ class Items(Resource):
 
     def get(self):
         "Return a list of all items"
-        return {"items" : items = [item.json() for item in ItemModel.find_all_items()]}
+        return {"items" : [item.json() for item in ItemModel.find_all_items()]}
         
 
     @fresh_jwt_required
