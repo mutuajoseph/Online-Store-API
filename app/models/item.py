@@ -4,8 +4,9 @@ from db.config import db
 
 ItemJSON = Dict[str, Union[int, str, float]]
 
+
 class ItemModel(db.Model):
-    __tablename__ : "items"
+    __tablename__: "items"
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False, unique=True)
@@ -13,18 +14,17 @@ class ItemModel(db.Model):
     store_id = db.Column(db.Integer, db.ForeignKey("stores.id"))
     store = db.relationship("StoreModel")
 
-    def __init__(self, name:str, price:float, store_id:int):
+    def __init__(self, name: str, price: float, store_id: int):
         self.name = name
         self.price = price
         self.store_id = store_id
-
 
     def json(self) -> ItemJSON:
         return {
             "id": self.id,
             "name": self.name,
             "price": self.price,
-            "store_id": self.store_id
+            "store_id": self.store_id,
         }
 
     # save a new item to the db
@@ -34,12 +34,12 @@ class ItemModel(db.Model):
 
     # get a single item by id
     @classmethod
-    def find_by_id(cls, id:int):
+    def find_by_id(cls, id: int) -> "ItemModel":
         return cls.query.filter_by(id=id).first()
 
     # get by name
     @classmethod
-    def find_by_name(cls, name:str):
+    def find_by_name(cls, name: str) -> "ItemModel":
         return cls.query.filter_by(name=name).first()
 
     # get all items in the db
@@ -51,4 +51,3 @@ class ItemModel(db.Model):
     def delete_from_db(self) -> None:
         db.session.delete(self)
         db.session.commit()
-

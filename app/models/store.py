@@ -4,6 +4,7 @@ from models.item import ItemJSON
 
 StoreJSON = Dict[str, Union[int, str, List[ItemJSON]]]
 
+
 class StoreModel(db.Model):
     __tablename__ = "stores"
     id = db.Column(db.Integer, primary_key=True)
@@ -13,7 +14,7 @@ class StoreModel(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     user = db.relationship("UserModel")
 
-    def __init__(self, name:str, user_id:int):
+    def __init__(self, name: str, user_id: int):
         self.name = name
         self.user_id = user_id
 
@@ -22,9 +23,9 @@ class StoreModel(db.Model):
             "id": self.id,
             "name": self.name,
             "items": [item.json() for item in self.items],
-            "user_id": self.user_id
+            "user_id": self.user_id,
         }
-    
+
     # save a store to db
     def save_to_db(self) -> None:
         db.session.add(self)
@@ -32,12 +33,12 @@ class StoreModel(db.Model):
 
     # find a single store
     @classmethod
-    def find_by_id(cls, id):
+    def find_by_id(cls, id) -> "StoreModel":
         return cls.query.filter_by(id=id).first()
 
     # find by name
     @classmethod
-    def find_by_name(cls, name):
+    def find_by_name(cls, name) -> "StoreModel":
         return cls.query.filter_by(name=name).first()
 
     # find all stores

@@ -5,7 +5,13 @@ from flask_jwt_extended import JWTManager
 from db.config import db
 from resources.item_resource import Item, Items
 from resources.store_resource import Store, Stores
-from resources.user_resource import User, UserRegister, UserLogin, UserLogout,TokenRefresh
+from resources.user_resource import (
+    User,
+    UserRegister,
+    UserLogin,
+    UserLogout,
+    TokenRefresh,
+)
 
 app = Flask(__name__)
 
@@ -21,12 +27,15 @@ app.config["JWT_BLACKLIST_TOKEN_CHECKS"] = [
 ]
 app.secret_key = "secret_key"
 
-api = Api(app, title="Items Store API" ,description="A simple Item Store API", version="1.0")
+api = Api(
+    app, title="Items Store API", description="A simple Item Store API", version="1.0"
+)
 
 # create tables
 @app.before_first_request
 def create_tables():
     db.create_all()
+
 
 jwt = JWTManager(app)
 
@@ -40,7 +49,7 @@ def check_if_token_in_blacklist(decrypted_token):
 
 api.add_resource(UserRegister, "/register")
 api.add_resource(UserLogin, "/login")
-api.add_resource(User, "/user/<int:id>")
+api.add_resource(User, "/user/<int:user_id>")
 api.add_resource(Item, "/item/<int:id>")
 api.add_resource(Items, "/item")
 api.add_resource(Store, "/store/<int:id>")
